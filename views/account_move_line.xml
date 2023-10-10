@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<data>
+
+
+  <record id="account_view_move_line_form" model="ir.ui.view">
+            <field name="name">account.view.move.line.form</field> 
+            <field name="model">account.move.line</field> 
+            <field name="inherit_id" ref="account.view_move_line_form"/> 
+            <field name="arch" type="xml"> 
+                 <xpath expr="//page[@name='information']" position="inside">
+
+                   <group>
+
+     
+                        <group>
+                           <group  string="Configuracion factura electronica">
+                            <field name="total_nsuj" colspan="2"/>
+                            <field name="total_exe" colspan="2"/>
+                            <field name="total_grav" colspan="2"/>
+                            <field name="desc_nsuje" colspan="2"/>
+                            <field name="desc_exc" colspan="2"/>
+                            <field name="estado" colspan="2"/>
+                        </group>
+                        </group> 
+                     
+                </group>
+          
+            
+          
+                   
+
+                </xpath>
+               
+            </field>
+        </record>
+    
+
+</data>
+
+
+    
+
+</odoo>

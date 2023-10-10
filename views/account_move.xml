@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_move_form" model="ir.ui.view">
+            <field name="name">view.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_draft']" position="after">
+                    <button name="button_json" string="Formar JSON" type="object" groups="account.group_account_invoice"/>
+                </xpath>
+
+                <!--Campos para factura electronica-->
+                
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="cod_generacion" string="Codigo de Generacion" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='cod_generacion']" position="after">
+                    <field name="num_control" string="Numero de control" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='cod_generacion']" position="before">
+                    <field name="tercero" string="¿Es un tercero?"/>
+                </xpath>
+
+                <xpath expr="//field[@name='tercero']" position="after">
+                    <field name="tercero_id" string="Datos tercero" attrs="{'invisible': [('tercero','=', False)]}"/>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page id="e_invoice" string="Facturación electrónica">
+                        <group>
+                            <group>
+                                <group string="Tipo de transmisión" >
+                                    <field name="tipo_transmision" string="Tipo de Operacion" colspan="3"/>
+                                    <field name="tipo_transmision_value" colspan="3" invisible="1" />
+                                </group>
+                            </group>
+                            <group>
+                                <group  string="Condicion de la operacion">
+                                    <field name="condicion_ope" colspan="3"/>
+                                </group>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <group name="contingency" string="Tipo de contingencia" attrs="{'invisible': [('tipo_transmision_value','not in', ['2'])]}">
+                                    <field name="tipo_contingencia" colspan="3"  attrs="{'invisible': [('tipo_transmision_value','not in', ['2'])]}"/>
+                                    <field name="tipo_contingencia_value" colspan="3" invisible="1" />
+                                </group>
+                            </group>
+                        
+                            <group>
+                                <group  string="Motivo de contingencia" attrs="{'invisible': ['|',('tipo_transmision_value','not in', ['2']),('tipo_contingencia_value','not in', ['5'])]}">
+                                    <field name="tipo_contingencia_value" colspan="3" invisible="1" />
+                                    <field name="motivo_contingencia" colspan="3" attrs="{'invisible': [('tipo_contingencia_value','not in', ['5'])]}"/>
+                                </group>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <group  string="Documento asociado">
+                                    <field name="doc_asc" colspan="3" />
+                                    <field name="doc_asc_value" colspan="3" invisible="1"/>
+                                     
+                                    <field name="medico_id" colspan="3" string="Datos medico" attrs="{'invisible': [('doc_asc_value','!=', '3')]}"/>
+                                    <field name="tipo_servicio" colspan="3" attrs="{'invisible': [('doc_asc_value','!=', '3')]}"/>
+                                    <field name="nombre_identificacion_medico" colspan="3" attrs="{'invisible': [('doc_asc_value','!=', '3')]}"/>
+                                    <field name="nombre_identificacion" colspan="3" attrs="{'invisible': [('doc_asc_value','not in', ['1','2'])]}"/>
+                                    <field name="detalle_documento" colspan="3" string="Detalle del documento" attrs="{'invisible': [('doc_asc_value','not in', ['1','2'])]}"/>
+                        
+                                </group>
+    
+                            </group>
+                           
+                         
+                            <group>
+                                <group  string="Tipo Generacion" invisible="1">
+                                    <field name="tipo_generacion" colspan="3" invisible="1"/>
+                                </group>
+                            </group>
+                        </group>    
+                    </page>
+                    <page id="related_doc" string="Documentos Relacionados">
+                        <field name="related_doc_ids" context="{'default_parent_doc_id': l10n_latam_document_type_id}">
+                            <tree editable="bottom">
+                                <field name="parent_doc_id" invisible="1"/>
+                                <field name="allowed_parent_doc_ids" invisible="1" widget="many2many_tags"/>
+                                <field name="child_doc_id" options='{"no_open": True, "no_create": True}'/>
+                                <field name="doc_type"/>
+                                <field name="doc_type_1_num" attrs="{'readonly':[('doc_type','==','2')]}"/>
+                                <field name="doc_type_1_date" attrs="{'readonly':[('doc_type','==','2')]}"/>
+                                <field name="doc_type_2_num" options='{"no_create": True}' attrs="{'readonly':[('doc_type','=','1')]}"/>
+                                <field name="doc_type_2_date" attrs="{'readonly':[('doc_type','=','1')]}"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                    
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="after">
+                    <field name="num_item" invisible="1"/>
+                    <field name="venta_exenta" invisible="1"/>
+                    <field name="venta_nsujet" invisible="1"/>
+                    <field name="venta_gravada" invisible="1"/>
+                    <field name="desc_grav" invisible="1"/>
+                    <field name="estado" decoration-success="estado == 'vg'" decoration-info="estado == 'vx'" decoration-warning="estado == 'vns'" optional="show"   />
+                </xpath>
+                  <!--Campos para seccion de resumen factura electronica-->
+
+                <xpath expr="//field[@name='narration']" position="after">
+                    <label for="desc_grav_rate" string="Ventas gravadas Desc. (%):" attrs="{'invisible':[('total_grav','=',0)]}"/>
+                    <field name="desc_grav_rate" class="oe_inline" nolabel="1" attrs="{'invisible':[('total_grav','=',0)], 'readonly':[('state','in',['posted', 'cancel'])]}"/>
+                    <!--<field name="total_letra" class="oe_inline" nolabel="1" attrs="{'readonly':[('state','in',['posted', 'cancel'])]}"/>-->
+                    <field name="mont_letras" string="Monto en letras" colspan="2"/>
+                    <field name="nombre_apendice" colspan="2"/> 
+                    <field name="descripcion_apendice" colspan="2"/>
+                    <field name="valor_apendice" colspan="2"/> 
+                </xpath>           
+
+                <xpath expr="//field[@name='tax_totals']" position="after">
+                    <field name="total_nsuj" invisible="1"/>
+                    <field name="total_exe" invisible="1"/>
+                    <field name="total_grav" invisible="1"/>
+                    <field name="sub_total_ventas" invisible="1"/>
+                    <field name="desc_grav" invisible="1"/>
+                    <field name="total_desc" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
+    </data>
+</odoo>
+

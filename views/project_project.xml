@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<data>
+
+
+  <record id="project_project_form" model="ir.ui.view">
+            <field name="name">project.project.form</field> 
+            <field name="model">project.project</field> 
+            <field name="inherit_id" ref="project.edit_project"/> 
+            <field name="arch" type="xml"> 
+                 <xpath expr="//field[@name='user_id']" position="replace">
+                    <field name="user_site_id" string="Responsable del Sitio" widget="many2one_avatar_user" attrs="{'readonly':[('active','=',False)]}" domain="[('share', '=', False)]"/>
+                </xpath>
+               
+            </field>
+        </record>
+
+        <record id="project_project_tree" model="ir.ui.view">
+            <field name="name">project.project.tree</field> 
+            <field name="model">project.project</field> 
+            <field name="inherit_id" ref="project.view_project"/> 
+            <field name="arch" type="xml"> 
+                 <xpath expr="//field[@name='user_id']" position="replace">
+                    <field name="user_site_id" string="Responsable del Sitio" widget="many2one_avatar_user" attrs="{'readonly':[('active','=',False)]}" domain="[('share', '=', False)]"/>
+                </xpath>
+               
+            </field>
+        </record>
+
+
+        <record id="report_project_task_user_graph" model="ir.ui.view">
+            <field name="name">report_project_task_user_graph</field> 
+            <field name="model">report.project.task.user</field> 
+            <field name="inherit_id" ref="project.view_task_project_user_graph"/> 
+            <field name="arch" type="xml"> 
+                 <xpath expr="//graph[@string='Tasks Analysis']" position="replace">
+                    <graph string="Milestone" sample="1">
+                 </graph>
+                </xpath>
+               
+            </field>
+        </record>
+
+   <!-- action window -->
+        <record id="project.open_view_project_all" model="ir.actions.act_window">
+            <field name="name">Sites</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.project</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context">{"search_default_fieldname":1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new sites
+                </p><p>
+                Click Sites
+                </p>
+            </field>
+        </record>
+
+<!--<record id="project.menu_main_pm" model="ir.ui.menu">
+    <field name="name">Sites</field>
+    <field name="sequence">1</field>
+</record>-->
+
+
+
+<record id="project.menu_project_report_task_analysis" model="ir.ui.menu"> 
+  <field name="name">My To-Do</field> 
+  <field name="action">project.action_project_task_user_tree</field>
+  <field name="parent">project.action_project_task_user_tree</field>
+
+  <field name="sequence">10</field>
+</record>
+
+<record id="project.menu_projects" model="ir.ui.menu"> 
+  <field name="name">My To-Do</field> 
+</record>
+    
+
+</data>
+
+
+    
+
+</odoo>
